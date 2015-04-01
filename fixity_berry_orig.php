@@ -61,7 +61,8 @@ function file_in_db($fname)
 
 function hashMatch($hash_db, $file)
 {
-	global $errors_found;
+	global $session_id;
+    global $errors_found;
 	global $message;
 	
 	$hash  = md5_file ($file ) ;
@@ -69,7 +70,7 @@ function hashMatch($hash_db, $file)
 	$atime = date ( 'Y-m-d H:i:s' , fileatime($file )) ;
 	$mtime = date ( 'Y-m-d H:i:s' , filemtime($file )) ;
 	
-	mysql_query("INSERT INTO history (filename,hash,size,access_time,modified_time,date_checked) VALUES ('$file','$hash','$size','$atime','$mtime', '" . date('Y-m-d H:i:s') . "')");
+	mysql_query("INSERT INTO history (filename,hash,size,access_time,modified_time,date_checked,session_id) VALUES ('$file','$hash','$size','$atime','$mtime', '" . date('Y-m-d H:i:s') . "','$session_id')");
 	
     if ($hash === $hash_db)
     	return true;
@@ -103,7 +104,7 @@ function add_file_to_db ($fname)
 	else
 	{
 		mysql_query("INSERT INTO files (filename,hash,size,access_time,modified_time,firstadded_datetime,last_session_id) VALUES ('$fname','$hash','$size','$atime','$mtime', '" . date('Y-m-d H:i:s') . "','$session_id')");
-		mysql_query("INSERT INTO history (filename,hash,size,access_time,modified_time,date_checked,last_session_id) VALUES ('$fname','$hash','$size','$atime','$mtime', '" . date('Y-m-d H:i:s') . "','$session_id')");
+		mysql_query("INSERT INTO history (filename,hash,size,access_time,modified_time,date_checked,session_id) VALUES ('$fname','$hash','$size','$atime','$mtime', '" . date('Y-m-d H:i:s') . "','$session_id')");
     	if (mysql_affected_rows() >= 1)
     		return $hash;
     	else
