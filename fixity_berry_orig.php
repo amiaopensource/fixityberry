@@ -67,10 +67,10 @@ function hashMatch($hash_db, $file)
 	
 	$hash  = md5_file ($file ) ;
 	$size  = filesize ($file ) ;
-	$atime = date ( 'Y-m-d H:i:s' , fileatime($file )) ;
-	$mtime = date ( 'Y-m-d H:i:s' , filemtime($file )) ;
+	$atime = gmdate ( 'Y-m-d H:i:s' , fileatime($file )) ;
+	$mtime = gmdate ( 'Y-m-d H:i:s' , filemtime($file )) ;
 	
-	mysql_query("INSERT INTO history (filename,hash,size,access_time,modified_time,date_checked,session_id) VALUES ('$file','$hash','$size','$atime','$mtime', '" . date('Y-m-d H:i:s') . "','$session_id')");
+	mysql_query("INSERT INTO history (filename,hash,size,access_time,modified_time,date_checked,session_id) VALUES ('$file','$hash','$size','$atime','$mtime', '" . gmdate('Y-m-d H:i:s') . "','$session_id')");
 	
     if ($hash === $hash_db)
     	return true;
@@ -92,8 +92,8 @@ function add_file_to_db ($fname)
 	
 	$hash  = md5_file ($fname ) ;
 	$size  = filesize ($fname ) ;
-	$atime = date ( 'Y-m-d H:i:s' , fileatime($fname )) ;
-	$mtime = date ( 'Y-m-d H:i:s' , filemtime($fname )) ;
+	$atime = gmdate ( 'Y-m-d H:i:s' , fileatime($fname )) ;
+	$mtime = gmdate ( 'Y-m-d H:i:s' , filemtime($fname )) ;
 	$fname = str_replace ("'", "\'", $fname);
 	
 	if (!$hash)
@@ -282,7 +282,7 @@ if (!$first_time_run)
 	checkRemovals();
 
 // prepare report
-$subject = "Fixity Berry Check on " . date('Y-m-d H:i:s');
+$subject = "Fixity Berry Check on " . gmdate('Y-m-d H:i:s');
 $message_start = $subject . "\n\n";
 
 if ($first_time_run)
