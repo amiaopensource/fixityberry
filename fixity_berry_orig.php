@@ -107,7 +107,7 @@ function add_file_to_db ($fname)
     	if (mysql_affected_rows() >= 1)
     		return $hash;
     	else
-    		die ("Unable to add $fname to database");		
+    		die ("Unable to add $fname to database.\n");		
 	}
 
     return false;
@@ -170,7 +170,7 @@ function fixityCheck($path)
     if (!dir_in_db($path, $db_file_cnt, $db_dir_cnt))
     {
     	if (!add_dir_to_db ($path, $local_file_cnt_check+$local_file_cnt_add, $local_dir_cnt))
-        	die ("Unable to add dir to database.");
+        	die ("Unable to add dir to database.\n");
     }
     else
     {
@@ -273,7 +273,7 @@ if (file_exists($startDir))
 else
 {
 	$errors_found = true;
-	$message = "No USB devices were found attached to the Pi.";
+	$message = "No USB devices were found attached to the Pi.\n";
 }	
 
 // check that nothing in the database can't be found anymore
