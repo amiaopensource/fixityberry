@@ -61,10 +61,10 @@ CREATE TABLE `history` (
   `access_time` timestamp NOT NULL,
   `modified_time` timestamp NOT NULL,
   `date_checked` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_session_id` varchar(50) NOT NULL,
+  `session_id` varchar(50) NOT NULL,
   KEY `filename` (`filename`(333)),
   KEY `hash` (`hash`),
-  KEY `last_session_id` (`last_session_id`)
+  KEY `session_id` (`session_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
