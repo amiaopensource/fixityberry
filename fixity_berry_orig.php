@@ -309,7 +309,7 @@ below for the files that were added.\n";
 }
 
 if ($message == "")
-	$message = "No warnings to report- all looks good.";
+	$message = "No warnings to report- all looks good.\n";
 
 $message = $message_start . "\n\nDetails Worth Mentioning:\n" . $message;
 
