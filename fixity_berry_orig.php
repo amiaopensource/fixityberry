@@ -10,19 +10,19 @@ function dir_in_db($dir, &$file_cnt = NULL, &$dir_cnt = NULL)
 {
 	global $session_id;
 	
-	$dir = str_replace ("'", "\'", $dir); 
+	$dir = str_replace ("'", "\'", $dir);
 	
 	$result = mysql_query ("SELECT file_cnt, dir_cnt FROM dirs WHERE dir = '$dir'");
     if (mysql_num_rows($result) == 0)
     	return false;
     $file_cnt = mysql_result($result, 0, 0);
     $dir_cnt = mysql_result($result, 0, 1);
-    
+
     mysql_query("UPDATE dirs SET last_session_id = '$session_id' WHERE dir = '$dir'");
     if (mysql_affected_rows() != 1)
     	return false;
-    
-    
+
+
     return true;
 }
 
@@ -30,7 +30,7 @@ function add_dir_to_db($dir, $file_cnt, $dir_cnt)
 {
 	global $session_id;
 	
-	$dir = str_replace ("'", "\'", $dir); 
+	$dir = str_replace ("'", "\'", $dir);
 	
 	mysql_query("INSERT INTO dirs (dir,file_cnt,dir_cnt,last_session_id) VALUES ('$dir',$file_cnt,$dir_cnt,'$session_id')");
     if (mysql_affected_rows() == 1)
@@ -42,7 +42,7 @@ function file_in_db($fname)
 {
 	global $session_id;
 	
-	$fname = str_replace ("'", "\'", $fname); 
+	$fname = str_replace ("'", "\'", $fname);
 	
 	$result = mysql_query ("SELECT hash FROM files WHERE filename = '$fname'");
     if (mysql_num_rows($result) == 0)
@@ -51,12 +51,12 @@ function file_in_db($fname)
     	
     	
     mysql_query("UPDATE files SET last_session_id = '$session_id' WHERE filename = '$fname'");
-    
+
     if (mysql_affected_rows() != 1)
     	return false;
-     
+
     return $hash;
-    
+
 }
 
 function hashMatch($hash_db, $file)
@@ -80,7 +80,7 @@ function hashMatch($hash_db, $file)
     	$errors_found = true;
     	$message .= "Unable to create hash for file: $file\n";
     }	
-    
+
     return false;
 }
 
@@ -94,7 +94,7 @@ function add_file_to_db ($fname)
 	$size  = filesize ($fname ) ;
 	$atime = date ( 'Y-m-d H:i:s' , fileatime($fname )) ;
 	$mtime = date ( 'Y-m-d H:i:s' , filemtime($fname )) ;
-	$fname = str_replace ("'", "\'", $fname); 
+	$fname = str_replace ("'", "\'", $fname);
 	
 	if (!$hash)
 	{
@@ -138,11 +138,11 @@ function fixityCheck($path)
         if (!is_dir($fullname))
         {
         	$hash = file_in_db ($fullname);
-            
+
             if (!$hash)
             {
             	$hash = add_file_to_db($fullname);
-        
+
             	$local_file_cnt_add++;
                 if ($hash && !$first_time_run)
            			$message .= "WARNING - File added for checking: $fullname\n";
@@ -154,13 +154,13 @@ function fixityCheck($path)
                 	$message .= "WARNING - Checksum does not match for file: $fullname\n";
 					$errors_found = true;                	
                 }
-				$local_file_cnt_check++;    
+				$local_file_cnt_check++;
             }
-            
+
            // for performance checking only
            // echo $hash . "\n";
-           
-           
+
+
         }
         else if (!($file == "." || $file == ".."))
         {
@@ -192,11 +192,11 @@ function fixityCheck($path)
     		mysql_query("UPDATE dirs SET dir_cnt = $local_dir_cnt WHERE dir = '$path'");
     	}
     }
-    
+
     $file_cnt_check += $local_file_cnt_check;
     $file_cnt_add += $local_file_cnt_add;
     $dir_cnt += $local_dir_cnt;
-    
+
     return true;
 }
 
@@ -286,8 +286,8 @@ $subject = "Fixity Berry Check on " . date('Y-m-d H:i:s');
 $message_start = $subject . "\n\n";
 
 if ($first_time_run)
-	$message_start .= 
-	"This is your first time running Fixity Berry, so the files found on USB drives are 
+	$message_start .=
+	"This is your first time running Fixity Berry, so the files found on USB drives are
 being added to the database, and will be checked next time you run Fixity Berry.\n\n";
 
 $message_start .= "Total Files Added for Checking: $file_cnt_add
@@ -296,9 +296,9 @@ Total Directories Monitored: $dir_cnt\n";
 
 if ($errors_found)
 {
-	$message_start .= 
-	"WARNING - Fixity errors were found, file counts are not consistent with what was in 
-the database, or there was a problem determining fixity.  Please look at 
+	$message_start .=
+	"WARNING - Fixity errors were found, file counts are not consistent with what was in
+the database, or there was a problem determining fixity.  Please look at
 the output below for more information.\n";
 	$subject = "*WARNINGS FOUND* " . $subject;
 }
@@ -307,12 +307,12 @@ the output below for more information.\n";
 if ($file_cnt_add > 0 && !$first_time_run)
 {
 	
-	$message_start .= 
-	"WARNING - Note that new files have appeared since the last time Fixity Berry was 
-run (e.g., new drives, new files on existing drives, etc.).  If this is not 
-something that you expected, then something malicious could be going on (e.g., 
-files being added to a drive without your knowledge).  Please look at the output 
-below for the files that were added.\n"; 
+	$message_start .=
+	"WARNING - Note that new files have appeared since the last time Fixity Berry was
+run (e.g., new drives, new files on existing drives, etc.).  If this is not
+something that you expected, then something malicious could be going on (e.g.,
+files being added to a drive without your knowledge).  Please look at the output
+below for the files that were added.\n";
 	if (!$errors_found)
 		$subject = "*WARNINGS FOUND* " . $subject;
 }
