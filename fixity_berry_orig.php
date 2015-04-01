@@ -85,7 +85,9 @@ function add_file_to_db ($fname)
 	global $message;
 	
 	$hash  = md5_file ($fname ) ;
-	
+	$size  = filesize ($fname ) ;
+	$atime = date ( 'Y-m-d H:i:s' , fileatime($fname )) ;
+	$mtime = date ( 'Y-m-d H:i:s' , filemtime($fname )) ;
 	$fname = str_replace ("'", "\'", $fname); 
 	
 	if (!$hash)
@@ -95,7 +97,7 @@ function add_file_to_db ($fname)
 	}
 	else
 	{
-		mysql_query("INSERT INTO files (filename,hash,firstadded_datetime,last_session_id) VALUES ('$fname','$hash', '" . date('Y-m-d H:i:s') . "','$session_id')");
+		mysql_query("INSERT INTO files (filename,hash,size,access_time,modified_time,firstadded_datetime,last_session_id) VALUES ('$fname','$hash','$size','$atime','$mtime', '" . date('Y-m-d H:i:s') . "','$session_id')");
     	if (mysql_affected_rows() >= 1)
     		return $hash;
     	else

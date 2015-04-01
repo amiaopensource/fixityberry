@@ -32,6 +32,9 @@ DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
   `filename` varchar(1025) CHARACTER SET utf8 NOT NULL,
   `hash` varchar(50) NOT NULL,
+  `size` int(11) NOT NULL DEFAULT '0',
+  `access_time` timestamp NOT NULL,
+  `modified_time` timestamp NOT NULL,
   `date_last_checked` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `firstadded_datetime` datetime NOT NULL,
   `last_session_id` varchar(50) NOT NULL,
