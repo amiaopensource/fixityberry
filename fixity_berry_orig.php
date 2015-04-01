@@ -65,12 +65,13 @@ function hashMatch($hash_db, $file)
     global $errors_found;
 	global $message;
 	
-	$hash  = md5_file ($file ) ;
+	$query_time = gmdate('Y-m-d H:i:s') ;
+    $hash  = md5_file ($file ) ;
 	$size  = filesize ($file ) ;
 	$atime = gmdate ( 'Y-m-d H:i:s' , fileatime($file )) ;
 	$mtime = gmdate ( 'Y-m-d H:i:s' , filemtime($file )) ;
 	
-	mysql_query("INSERT INTO history (filename,hash,size,access_time,modified_time,date_checked,session_id) VALUES ('$file','$hash','$size','$atime','$mtime', '" . gmdate('Y-m-d H:i:s') . "','$session_id')");
+	mysql_query("INSERT INTO history (filename,hash,size,access_time,modified_time,date_checked,session_id) VALUES ('$file','$hash','$size','$atime','$mtime', '$query_time','$session_id')");
 	
     if ($hash === $hash_db)
     	return true;
@@ -90,7 +91,8 @@ function add_file_to_db ($fname)
 	global $errors_found;
 	global $message;
 	
-	$hash  = md5_file ($fname ) ;
+	$query_time = date('Y-m-d H:i:s') ;
+    $hash  = md5_file ($fname ) ;
 	$size  = filesize ($fname ) ;
 	$atime = gmdate ( 'Y-m-d H:i:s' , fileatime($fname )) ;
 	$mtime = gmdate ( 'Y-m-d H:i:s' , filemtime($fname )) ;
@@ -103,8 +105,8 @@ function add_file_to_db ($fname)
 	}
 	else
 	{
-		mysql_query("INSERT INTO files (filename,hash,size,access_time,modified_time,firstadded_datetime,last_session_id) VALUES ('$fname','$hash','$size','$atime','$mtime', '" . date('Y-m-d H:i:s') . "','$session_id')");
-		mysql_query("INSERT INTO history (filename,hash,size,access_time,modified_time,date_checked,session_id) VALUES ('$fname','$hash','$size','$atime','$mtime', '" . date('Y-m-d H:i:s') . "','$session_id')");
+        mysql_query("INSERT INTO files (filename,hash,size,access_time,modified_time,firstadded_datetime,last_session_id) VALUES ('$fname','$hash','$size','$atime','$mtime', '$query_time','$session_id')");
+		mysql_query("INSERT INTO history (filename,hash,size,access_time,modified_time,date_checked,session_id) VALUES ('$fname','$hash','$size','$atime','$mtime', '$query_time','$session_id')");
     	if (mysql_affected_rows() >= 1)
     		return $hash;
     	else
